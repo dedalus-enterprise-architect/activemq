@@ -1,0 +1,144 @@
+apiVersion: template.openshift.io/v1
+kind: Template
+labels:
+  template: dedalus-active-mq
+message: >-
+  The following service(s) have been created in your current project.
+
+         Application Name: active-mq
+      Application Version: 5.15.2
+metadata:
+  annotations:
+    description: >-
+      This template allows you to deploy OpenShift ActiveMQ version 5.15.2.
+    iconClass: icon-d4center
+    openshift.io/display-name: D4 Stack - ActiveMQ
+    openshift.io/documentation-url: >-
+      https://confluence.dedalus.eu/display/DRA/Active+MQ+Configuration
+    openshift.io/long-description: >-
+      For further information, check the official documentation on https://activemq.apache.org/.
+    openshift.io/provider-display-name: Dedalus S.p.A.
+    tags: 'dedalus-active-mq,dedalus'
+  name: dedalus-active-mq
+  selfLink: >-
+    /apis/template.openshift.io/v1/namespaces/prod/templates/dedalus-activemq
+objects:
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      openshift.io/generated-by: OpenShiftNewApp
+    generation: 1
+    labels:
+      app: openshift-activemq
+    name: openshift-activemq
+  spec:
+    replicas: 1
+    revisionHistoryLimit: 10
+    selector:
+      app: openshift-activemq
+      deploymentconfig: openshift-activemq
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        labels:
+          app: openshift-activemq
+          deploymentconfig: openshift-activemq
+      spec:
+        containers:
+        - image: ''
+          imagePullPolicy: Always
+          name: openshift-activemq
+          ports:
+          - containerPort: 61616
+            protocol: TCP
+          - containerPort: 8161
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+    test: false
+    triggers:
+    - type: ConfigChange
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - openshift-activemq
+        from:
+          kind: ImageStreamTag
+          name: openshift-activemq:5.15.2
+      type: ImageChange
+    - type: ConfigChange
+- apiVersion: image.openshift.io/v1
+  kind: ImageStream
+  metadata:
+    labels:
+      app: openshift-activemq
+      io.dedalus.activemq: activemq
+    name: openshift-activemq
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+      - annotations: null
+        from:
+          kind: DockerImage
+          name: 350801433917.dkr.ecr.eu-west-1.amazonaws.com/enterprise-architect/support:activemq-5.15.2
+        importPolicy: { }
+        name: 5.15.2
+        referencePolicy:
+          type: Source
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: Service
+  metadata:
+    labels:
+      app: openshift-activemq
+    name: openshift-activemq
+  spec:
+    ports:
+    - name: 8161-tcp
+      port: 8161
+      protocol: TCP
+      targetPort: 8161
+    - name: 61616-tcp
+      port: 61616
+      protocol: TCP
+      targetPort: 61616
+    selector:
+      app: openshift-activemq
+      deploymentconfig: openshift-activemq
+    sessionAffinity: None
+    type: ClusterIP
+- apiVersion: v1
+  kind: Route
+  metadata:
+    labels:
+      app: openshift-activemq
+    name: activemq
+  spec:
+    port:
+      targetPort: 8161-tcp
+    tls:
+      insecureEdgeTerminationPolicy: Redirect
+      termination: edge
+    to:
+      kind: Service
+      name: openshift-activemq
+      weight: 100
+    wildcardPolicy: None
