@@ -66,6 +66,13 @@ objects:
           resources: {}
           terminationMessagePath: /dev/termination-log
           terminationMessagePolicy: File
+          resources:
+            limits:
+              cpu: '200m'
+              memory: '1500Mi'
+            requests:
+              cpu: '100m'
+              memory: '100Mi'
         dnsPolicy: ClusterFirst
         restartPolicy: Always
         schedulerName: default-scheduler
