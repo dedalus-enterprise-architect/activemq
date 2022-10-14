@@ -2,10 +2,6 @@ kind: Template
 apiVersion: template.openshift.io/v1
 metadata:
   name: dedalus-active-mq
-  namespace: test
-  uid: 97d061ef-eee3-423d-8a53-b15873f6f90f
-  resourceVersion: '388190070'
-  creationTimestamp: '2022-09-26T12:56:32Z'
   annotations:
     description: This template allows you to deploy OpenShift ActiveMQ version 5.15.2.
     iconClass: icon-d4center
@@ -16,28 +12,6 @@ metadata:
       https://activemq.apache.org/.
     openshift.io/provider-display-name: Dedalus S.p.A.
     tags: 'dedalus-active-mq,dedalus'
-  managedFields:
-    - manager: Mozilla
-      operation: Update
-      apiVersion: template.openshift.io/v1
-      time: '2022-09-26T12:56:32Z'
-      fieldsType: FieldsV1
-      fieldsV1:
-        'f:labels':
-          .: {}
-          'f:template': {}
-        'f:message': {}
-        'f:metadata':
-          'f:annotations':
-            .: {}
-            'f:description': {}
-            'f:iconClass': {}
-            'f:openshift.io/display-name': {}
-            'f:openshift.io/documentation-url': {}
-            'f:openshift.io/long-description': {}
-            'f:openshift.io/provider-display-name': {}
-            'f:tags': {}
-        'f:objects': {}
 message: |-
   The following service(s) have been created in your current project.
 
